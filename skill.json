@@ -1,0 +1,17 @@
+{
+  "name": "genpark-earley-context-free-grammar-parser-skill",
+  "version": "1.0.0",
+  "description": "Autonomous Agent Earley Context-Free Grammar Chart Parser with Arbitrary Ambiguity & Recursion",
+  "entry_point": "client.py",
+  "example": "example_usage.py",
+  "mcp_server": "mcp_server.py",
+  "dependencies": [],
+  "tags": [
+    "genpark-skill",
+    "agentic-ai",
+    "nlp",
+    "earley-parser",
+    "cfg",
+    "parsing-algorithms"
+  ]
+}
