@@ -1,1 +1,1 @@
-# Zero external dependencies\n# Standard library only\n
+# Pure standard library - strictly zero dependencies\n
