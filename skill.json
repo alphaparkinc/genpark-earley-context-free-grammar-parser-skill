@@ -1,17 +1,17 @@
 {
   "name": "genpark-earley-context-free-grammar-parser-skill",
   "version": "1.0.0",
-  "description": "Autonomous Agent Earley Context-Free Grammar Chart Parser with Arbitrary Ambiguity & Recursion",
-  "entry_point": "client.py",
-  "example": "example_usage.py",
+  "description": "Earley chart parsing algorithm with predictor, scanner, and completer phases handling arbitrary and ambiguous Context-Free Grammars (CFGs).",
+  "main": "client.py",
   "mcp_server": "mcp_server.py",
-  "dependencies": [],
-  "tags": [
+  "topics": [
     "genpark-skill",
     "agentic-ai",
-    "nlp",
     "earley-parser",
     "cfg",
-    "parsing-algorithms"
-  ]
+    "context-free-grammar",
+    "chart-parsing",
+    "computational-linguistics"
+  ],
+  "dependencies": []
 }
