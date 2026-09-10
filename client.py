@@ -1,48 +1,45 @@
-"""
-Autonomous Agent Earley CFG Chart Parser Skill
-Pure Python Standard Library implementation.
-"""
-from typing import List, Dict, Any
-
 class EarleyParser:
     """
-    Earley parser supporting general context-free grammars (CFGs).
+    Earley Context-Free Grammar Chart Parser.
+    Handles recursive and ambiguous grammars with predictor, scanner, and completer states.
     """
-    def __init__(self, grammar: Dict[str, List[List[str]]], start_symbol: str = "S"):
+    def __init__(self, grammar):
         self.grammar = grammar
-        self.start = start_symbol
 
-    def parse(self, tokens: List[str]) -> bool:
+    def parse(self, tokens):
         chart = [[] for _ in range(len(tokens) + 1)]
-        for prod in self.grammar.get(self.start, []):
-            chart[0].append((self.start, prod, 0, 0))
+        for rhs in self.grammar.get("S", []):
+            chart[0].append(("S", rhs, 0, 0))
 
         for i in range(len(tokens) + 1):
-            j = 0
-            while j < len(chart[i]):
-                lhs, rhs, dot, origin = chart[i][j]
-                j += 1
+            added = True
+            while added:
+                added = False
+                for state in list(chart[i]):
+                    lhs, rhs, dot, origin = state
+                    if dot < len(rhs):
+                        next_sym = rhs[dot]
+                        if next_sym in self.grammar:
+                            for prod in self.grammar[next_sym]:
+                                new_st = (next_sym, prod, 0, i)
+                                if new_st not in chart[i]:
+                                    chart[i].append(new_st)
+                                    added = True
+                        elif i < len(tokens) and next_sym == tokens[i]:
+                            new_st = (lhs, rhs, dot + 1, origin)
+                            if new_st not in chart[i + 1]:
+                                chart[i + 1].append(new_st)
+                    else:
+                        for prev_st in list(chart[origin]):
+                            p_lhs, p_rhs, p_dot, p_orig = prev_st
+                            if p_dot < len(p_rhs) and p_rhs[p_dot] == lhs:
+                                new_st = (p_lhs, p_rhs, p_dot + 1, p_orig)
+                                if new_st not in chart[i]:
+                                    chart[i].append(new_st)
+                                    added = True
 
-                if dot < len(rhs):
-                    next_symbol = rhs[dot]
-                    if next_symbol in self.grammar:
-                        for prod in self.grammar[next_symbol]:
-                            state = (next_symbol, prod, 0, i)
-                            if state not in chart[i]:
-                                chart[i].append(state)
-                    elif i < len(tokens) and next_symbol == tokens[i]:
-                        state = (lhs, rhs, dot + 1, origin)
-                        if state not in chart[i + 1]:
-                            chart[i + 1].append(state)
-                else:
-                    for state in chart[origin]:
-                        s_lhs, s_rhs, s_dot, s_origin = state
-                        if s_dot < len(s_rhs) and s_rhs[s_dot] == lhs:
-                            new_state = (s_lhs, s_rhs, s_dot + 1, s_origin)
-                            if new_state not in chart[i]:
-                                chart[i].append(new_state)
-
-        for lhs, rhs, dot, origin in chart[len(tokens)]:
-            if lhs == self.start and dot == len(rhs) and origin == 0:
+        for state in chart[len(tokens)]:
+            lhs, rhs, dot, origin = state
+            if lhs == "S" and dot == len(rhs) and origin == 0:
                 return True
         return False
